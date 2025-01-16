@@ -7,9 +7,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Setup Python environment
-      uses: actions/setup-python@v1.1.1
+      uses: actions/setup-python@v4
     - name: Install requirements
       run: pip install --quiet --requirement requirements.txt
     - name: Lint code
