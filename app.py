@@ -7,8 +7,9 @@ from flask import Flask, jsonify, abort, make_response
 
 APP = Flask(__name__)
 
-# Load the data
-MASCOTS = json.load(open('data.json', 'r'))
+# Load the data using a with block and specifying encoding
+with open('data.json', 'r', encoding='utf-8') as file:
+    MASCOTS = json.load(file)
 
 
 @APP.route('/', methods=['GET'])
@@ -28,11 +29,10 @@ def get_mascot(guid):
     Input: a mascot GUID
     Returns: The mascot object with GUID matching the input
     """
-    for mascot in MASCOTS:
-        if guid == mascot['guid']:
-            return jsonify(mascot)
+    mascot = next((m for m in MASCOTS if m['guid'] == guid), None)
+    if mascot:
+        return jsonify(mascot)
     abort(404)
-    return None
 
 
 @APP.errorhandler(404)
@@ -40,9 +40,9 @@ def not_found(error):
     """
     Function: not_found
     Input: The error
-    Returns: HTTP 404 with r
+    Returns: HTTP 404 with error details
     """
-    return make_response(jsonify({'error': str(error)}), 404)
+    return make_response(jsonify({'error': 'Resource not found', 'details': str(error)}), 404)
 
 
 if __name__ == '__main__':
